@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "gl2.h": "c",
+        "egl.h": "c",
+        "emscripten.h": "c",
+        "stdio.h": "c",
+        "actor.h": "c",
+        "shared.h": "c"
+    }
+}
