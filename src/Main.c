@@ -52,7 +52,8 @@ void Update(void)
 int Start(void)
 {
 	SDL_Init(SDL_INIT_VIDEO);
-	SDL_CreateWindowAndRenderer(CANVAS_WIDTH, CANVAS_HEIGHT, 0, &context.window, &context.renderer);
+	context.window = SDL_CreateWindow(0, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, (SDL_WINDOW_OPENGL));
+	context.renderer = SDL_CreateRenderer(context.window, -1, SDL_RENDERER_PRESENTVSYNC);
 	SDL_SetRenderDrawColor(context.renderer, 64, 64, 64, 255);
 	SDL_RenderClear(context.renderer);
 	TestCube(&cube);
@@ -64,8 +65,7 @@ int Start(void)
 }
 int main()
 {
+	emscripten_set_main_loop(Update, 0, 0);
 	Start();
 	printf("why always error before I call emscripten_set_main_loop...\n");
-	emscripten_set_main_loop(Update, 0, 0);
-	
 }
