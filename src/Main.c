@@ -67,5 +67,4 @@ int main()
 {
 	emscripten_set_main_loop(Update, 0, 0);
 	Start();
-	printf("why always error before I call emscripten_set_main_loop...\n");
 }
