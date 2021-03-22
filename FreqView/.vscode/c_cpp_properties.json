@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Wasm",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/../emsdk/upstream/emscripten/system/include/**",
+                "${workspaceFolder}/../emsdk/upstream/emscripten/system/include/libc/**",
+                "${workspaceFolder}/../emsdk/upstream/emscripten/cache/wasm/include/**",
+                "${workspaceFolder}/../emsdk/upstream/emscripten/system/lib/libc/musl/arch/emscripten",
+                "${workspaceFolder}/../include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.18362.0",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}
