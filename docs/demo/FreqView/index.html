@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Container</title>
+</head>
+
+<body>
+  <canvas id="canvas" style="height:auto" onload="this.style.width='50vw'"></canvas>
+  <input id="fileInput" type="file" accept="audio/*">Open Audio File</input>
+  <script type='text/javascript'>
+    const theCanvas = document.getElementById("canvas");
+    var Module = {
+      canvas: theCanvas
+    };
+
+    var started = false;
+
+    var fileInput = document.getElementById('fileInput');
+
+    var AudioContext = window.AudioContext || window.webkitAudioContext;
+    var audioContext = new AudioContext();
+    var audioBufferSourceNode = audioContext.createBufferSource();
+    var analyser = audioContext.createAnalyser();
+    analyser.fftSize = 256;
+    var dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+    var heapBuffer;
+
+    fileInput.onchange = function () {
+      if (fileInput.files[0]) {
+        let fileReader = new FileReader();
+        fileReader.onload = function (e) {
+          fileContent = e.target.result;
+
+          audioContext.decodeAudioData(fileContent, function (buffer) {
+            heapBuffer = Module._malloc(dataArray.length * dataArray.BYTES_PER_ELEMENT);
+            Module.HEAPU8.set(dataArray, heapBuffer);
+
+            audioBufferSourceNode = audioContext.createBufferSource();
+            audioBufferSourceNode.connect(analyser);
+            analyser.connect(audioContext.destination);
+            audioBufferSourceNode.buffer = buffer;
+            audioBufferSourceNode.start(0);
+            started = true;
+          });
+        }
+        fileReader.readAsArrayBuffer(fileInput.files[0]);
+      }
+    }
+
+    function getFFTData() {
+      if (!started) return;
+      analyser.getByteFrequencyData(dataArray);
+      Module.HEAPU8.set(dataArray, heapBuffer);
+      Module._GetArrayHEAP(heapBuffer, dataArray.length);
+      return 0;
+    }
+
+
+  </script>
+  <script type="text/javascript" async src="app.js"></script>
+
+</body>
+
+</html>
