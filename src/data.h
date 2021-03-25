@@ -1,4 +1,4 @@
-#include <GLES2/gl2.h>
+#include <GLES3/gl3.h>
 const GLchar *vertex_shader_code[] = {"precision mediump float; \n"
                                       "attribute vec4 a_position; \n"
                                       "attribute vec2 a_texcoord; \n"
@@ -13,7 +13,7 @@ const GLchar *fragment_shader_code[] = {"precision mediump float; \n"
                                         "varying vec2 v_texcoord; \n"
                                         "uniform sampler2D u_texture; \n"
                                         "void main() { \n"
-                                        "gl_FragColor = texture2D(u_texture, v_texcoord); \n"
+                                        "gl_FragColor = texture2D(u_texture, v_texcoord)+vec4(0.5,0.5,0.5,1); \n"
                                         "} \n"};
 GLfloat vertices[] = {-1.0f, 1.0f, -1.0f, /* Back. */
                       1.0f, 1.0f, -1.0f,

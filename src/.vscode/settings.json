@@ -5,6 +5,7 @@
         "emscripten.h": "c",
         "stdio.h": "c",
         "actor.h": "c",
-        "shared.h": "c"
+        "shared.h": "c",
+        "sdl.h": "c"
     }
 }
