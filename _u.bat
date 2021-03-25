@@ -1,4 +1,6 @@
+cd FreqView
 call _c.bat
+cd ..
 
 rd /Q /S E:\LocalHost\wwwroot\wasm
 md E:\LocalHost\wwwroot\wasm

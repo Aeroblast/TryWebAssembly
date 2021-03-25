@@ -6,9 +6,8 @@
 #define CANVAS_WIDTH 800
 #define CANVAS_HEIGHT 600
 
-#define FREQ_COUNT 16
+#define FREQ_COUNT 128
 
-typedef struct Actor Actor;
 typedef struct AppContext AppContext;
 
 struct AppContext
@@ -17,7 +16,18 @@ struct AppContext
     SDL_Renderer *renderer;
     Uint32 deltaTime,currentTime;
 };
+
+//render ==> GetData ==>getFFTData (JavaScript) => PortData
+
+//Main.c
+void GetData();
+
+
+//render.c
+void PortData(unsigned char* heightData);
 int Init(AppContext *);
 int Render(AppContext *);
-void GenarateCubes(uint count, GLfloat **pVertex, uint *vertexCount, GLshort **pIndices, uint *indicesCount);
+
+//gen_vertex.c
+void GenarateCubes(unsigned int count, GLfloat **pVertex, unsigned int *vertexCount, GLshort **pIndices, unsigned int  *indicesCount);
 #endif

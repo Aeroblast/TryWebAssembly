@@ -12,16 +12,17 @@ uint vertexCount;
 GLshort *indicesData;
 uint indicesCount;
 
-GLfloat heightData[FREQ_COUNT] = {0.1f, 0.5f, 0.7f, 0.9f, 0.5f, 0.8f, 0.3f, 0.8f, 0.1f, 0.5f, 0.7f, 0.9f, 0.5f, 0.8f, 0.3f, 0.8f};
+//GLfloat heightData[FREQ_COUNT] = {0.1f, 0.5f, 0.7f, 0.9f, 0.5f, 0.8f, 0.3f, 0.8f, 0.1f, 0.5f, 0.7f, 0.9f, 0.5f, 0.8f, 0.3f, 0.8f};
 GLfloat heightDataForGPU[FREQ_COUNT * 4] = {0}; //only top face, 4 vertice per cube
-void PortData()
+void PortData(unsigned char *heightData)
 {
     for (int i = 0; i < FREQ_COUNT; i++)
     {
-        heightDataForGPU[i * 4] = heightData[i];
-        heightDataForGPU[i * 4 + 1] = heightData[i];
-        heightDataForGPU[i * 4 + 2] = heightData[i];
-        heightDataForGPU[i * 4 + 3] = heightData[i];
+        GLfloat t = heightData[i] / 256.0f;
+        heightDataForGPU[i * 4] = t;
+        heightDataForGPU[i * 4 + 1] = t;
+        heightDataForGPU[i * 4 + 2] = t;
+        heightDataForGPU[i * 4 + 3] = t;
     }
     glBufferSubData(GL_ARRAY_BUFFER, vertexCount * sizeof(GLfloat), sizeof(heightDataForGPU), heightDataForGPU);
 }
@@ -90,12 +91,10 @@ int Init(AppContext *context)
     glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(GLfloat) + sizeof(heightDataForGPU) * 2, vertexData, GL_STATIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, vertexCount * sizeof(GLfloat) + sizeof(heightDataForGPU), sizeof(heightDataForGPU), heightDataForGPU); //just in case, when heightDataForGPU all 0
 
-    PortData();
-
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesCount * sizeof(GLshort), indicesData, GL_STATIC_DRAW);
     printf("Vertice Count: %d  Indices Count: %d\n", vertexCount, indicesCount);
-    //printf("%f %f %f\n", vertexData[72], vertexData[73], vertexData[74]);
-    //printf("%u %u %u\n", indicesData[69], indicesData[70], indicesData[71]);
+    //printf("%f %f %f\n", vertexData[0], vertexData[1], vertexData[2]);
+    //printf("%u %u %u\n", indicesData[0], indicesData[1], indicesData[2]);
 
     glVertexAttribPointer(a_position_location, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
     glVertexAttribPointer(a_height_location, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat), (void *)(vertexCount * sizeof(GLfloat)));
@@ -118,7 +117,10 @@ int Render(AppContext *context)
     {
         angle -= 360;
     }
+
+    GetData();
     //to-do: replace with fft result
+    /*
     for (int i = 0; i < FREQ_COUNT; i++)
     {
         heightData[i] += 0.1f;
@@ -126,6 +128,7 @@ int Render(AppContext *context)
             heightData[i] = 0;
     }
     PortData();
+    */
 
     Matrix_IdentityFunction(modelViewMatrix);
     Matrix_RotateY(modelViewMatrix, angle);

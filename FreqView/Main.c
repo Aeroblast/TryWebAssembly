@@ -11,27 +11,25 @@ SDL_Event event;
 
 AppContext context;
 
+
+void GetData()
+{
+	EM_ASM_INT("getFFTData()"); //then js content call  GetArrayHEAPF32
+}
+
+//call by js
+void EMSCRIPTEN_KEEPALIVE GetArrayHEAP(unsigned char *array, int length)
+{
+	PortData(array);
+}
+
 void Update(void)
 {
-	/*
-	if (SDL_PollEvent(&event))
-	{
-		if (event.type == SDL_KEYDOWN)
-		{
-
-			switch (event.key.keysym.sym)
-			{
-			case SDLK_LEFT:
-
-				break;
-			}
-		}
-	}
-
-	currentTime = SDL_GetTicks();
-	Uint32 deltaTime = currentTime - lastTime;
+	currentTime = SDL_GetTicks(); //milliseconds
+	context.currentTime = currentTime;
+	context.deltaTime = currentTime - lastTime;
 	lastTime = currentTime;
-*/
+
 	Render(&context);
 }
 
