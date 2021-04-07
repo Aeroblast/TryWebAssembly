@@ -14,7 +14,7 @@ AppContext context;
 
 void GetData()
 {
-	EM_ASM_INT("getFFTData()"); //then js content call  GetArrayHEAPF32
+	EM_ASM_INT("getFFTData()"); //then js content call  GetArrayHEAP
 }
 
 //call by js

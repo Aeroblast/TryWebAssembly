@@ -22,41 +22,6 @@ GLushort cubeIndices[] = {
 
 //#define OLD_GEN_METHOD
 
-#ifdef OLD_GEN_METHOD
-void GenarateCubes(uint count, GLfloat **pVertex, uint *vertexCount, GLshort **pIndices, uint *indicesCount)
-{
-    GLfloat *vertex = malloc(count * sizeof(cubeVertex));
-    GLshort *indices = malloc(count * sizeof(cubeIndices));
-    *vertexCount = CUBE_V_COUNT * count;
-    *indicesCount = CUBE_I_COUNT * count;
-    for (int i = 0; i < count; i++)
-    {
-        for (int j = 0; j < CUBE_V_COUNT; j++)
-        {
-            GLfloat t = cubeVertex[j] / count;
-            switch (j % 3)
-            {
-            case 0:
-                t = t + i * (1.0f / count);
-                t -= 0.5f;
-                break;
-            case 1:
-                break;
-            case 2:
-                t -= 0.5f / count;
-                break;
-            }
-            vertex[i * CUBE_V_COUNT + j] = t;
-        }
-        for (int j = 0; j < CUBE_I_COUNT; j++)
-        {
-            indices[i * CUBE_I_COUNT + j] = cubeIndices[j] + CUBE_V_COUNT / 3 * i;
-        }
-    }
-    *pVertex = vertex;
-    *pIndices = indices;
-}
-#else
 void GenarateCubes(uint count, GLfloat **pVertex, uint *vertexCount, GLshort **pIndices, uint *indicesCount)
 {
     GLfloat *vertex = malloc(count * sizeof(cubeVertex));
@@ -105,4 +70,3 @@ void GenarateCubes(uint count, GLfloat **pVertex, uint *vertexCount, GLshort **p
     *pVertex = vertex;
     *pIndices = indices;
 }
-#endif

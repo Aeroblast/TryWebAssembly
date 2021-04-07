@@ -1,3 +1,4 @@
+copy container.html ..\debug\debug.html
 "..\emsdk\upstream\emscripten\emcc" ^
 -Iinclude ^
 matrix.c ^
