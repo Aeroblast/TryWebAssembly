@@ -1,0 +1,1 @@
+@cmd /k call ".\emsdk\emsdk_env.bat"

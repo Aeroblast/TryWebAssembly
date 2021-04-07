@@ -1,4 +1,4 @@
-cd FreqView
+cd %*
 call _c.bat
 cd ..
 
