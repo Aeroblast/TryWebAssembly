@@ -28,6 +28,7 @@ GLuint texture;
 GLint a_texcoord_location = -1;
 GLint a_position_location = -1;
 GLint u_texture_location = -1;
+GLint u_texture2_location = -1;
 GLint u_translate_location = -1;
 GLuint vertex_texture_buffer;
 
@@ -67,7 +68,11 @@ void Update(void)
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glUniform4f(u_translate_location, ship_x, ship_y, 0, 0);
+	glUniform4f(u_translate_location, -0.5, ship_y, 0, 0);
+	glUniform1i(u_texture_location, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glUniform4f(u_translate_location, 0.5, ship_y, 0, 0);
+	glUniform1i(u_texture_location, 1);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	//return EM_TRUE;
 }
@@ -76,7 +81,8 @@ void Update(void)
 int Start(void)
 {
 	SDL_Init(SDL_INIT_VIDEO);
-	SDL_CreateWindowAndRenderer(CANVAS_WIDTH, CANVAS_HEIGHT, 0, &window, &renderer);
+	window = SDL_CreateWindow(0, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, (SDL_WINDOW_OPENGL));
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 	SDL_SetRenderDrawColor(renderer, 64, 64, 64, 255);
 	SDL_RenderClear(renderer);
 	GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -120,24 +126,34 @@ int Start(void)
 	glGenBuffers(1, &vertex_texture_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_texture_buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_texture_data), vertex_texture_data, GL_STATIC_DRAW);
-	sprite_surface = IMG_Load("/data/Xion.png");
-	if (!sprite_surface)
+	GLuint circle_tex, normal_tex;
+	glGenTextures(1, &circle_tex);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, circle_tex);
+	SDL_Surface *surface;
+	surface = IMG_Load("/data/Test1.png");
+	if (!surface)
 	{
 		printf("failed to load image: %s\n", IMG_GetError());
 		return 0;
 	}
-	sprite_texture = SDL_CreateTextureFromSurface(renderer, sprite_surface);
-	if (!sprite_texture)
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+	glUniform1i(u_texture_location, 0);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	SDL_FreeSurface(surface);
+	glGenTextures(1, &normal_tex);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, normal_tex);
+	surface = IMG_Load("/data/Test0.png");
+	if (!surface)
 	{
-		printf("failed to create texture: %s\n", IMG_GetError());
+		printf("failed to load image: %s\n", IMG_GetError());
 		return 0;
 	}
-	SDL_QueryTexture(sprite_texture, NULL, NULL, &sprite_width, &sprite_height);
-	printf("%d %d\n", sprite_width, sprite_height);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sprite_width, sprite_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, sprite_surface->pixels);
-	SDL_FreeSurface(sprite_surface);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_BLEND);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+	glUniform1i(u_texture2_location, 1);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	SDL_FreeSurface(surface);
 
 	glEnableVertexAttribArray(a_position_location);
 	glVertexAttribPointer(a_position_location, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
@@ -150,5 +166,4 @@ int main()
 	printf("Just test\n");
 	emscripten_set_main_loop(Update, 0, 0);
 	Start();
-	//emscripten_request_animation_frame_loop(Update, 0);
 }
