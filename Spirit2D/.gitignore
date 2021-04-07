@@ -1,0 +1,4 @@
+emsdk
+debug
+data/*.png
+include/glm
